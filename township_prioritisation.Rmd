@@ -12,7 +12,18 @@ output:
     number_sections: false
     collapsed: false
 always_allow_html: true   
+google_analytics: G-DN9JWJB7PX
 ---
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-DN9JWJB7PX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-DN9JWJB7PX');
+</script>
 
 ```{css, echo=FALSE}
 
@@ -1141,8 +1152,6 @@ For reference, below is the code use to cluster townships according to the confl
 ```{r echo = TRUE, eval = FALSE}
 # k-means clustering and output
 set.seed(123)
-
-range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
 km_res2 <- fs_pin %>% 
   replace_na(list(fatalities = 0)) %>% 
