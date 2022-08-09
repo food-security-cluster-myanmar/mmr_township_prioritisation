@@ -210,7 +210,7 @@ This document is the first of two on prioritisation and is focused on geographic
 * Food Security Cluster, Myanmar (2022). Understanding Conflict Dynamics in Myanmar through Conflict and Incident Data: A Food Security Perspective. https://food-security-cluster-myanmar.github.io/exploratory-data-analysis-acled-fsc/.
 * HARP-F and MIMU (2018). Vulnerability in Myanmar: A Secondary Data Review of Needs, Coverage and Gaps. http://themimu.info/vulnerability-in-myanmar.
 * IFPRI (2022). Household Welfare in Myanmar: Results from the Myanmar Household Welfare Survey. 
-* MIMU (2022). Climate, Environmental Degradation and Disaster Risk in Myanmar. 
+* MIMU (2022). Climate, Environmental Degradation and Disaster Risk in Myanmar -- a MIMU Analytical Brief. http://themimu.info/environmental-analysis.
 * UNHCR (2022). Pre and Post 1 Feb 2021 IDPs Population by Township level. 
 
 <br><br><br>
