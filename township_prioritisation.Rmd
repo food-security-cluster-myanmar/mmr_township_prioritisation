@@ -136,7 +136,7 @@ mode <- function(x) {
 # here
 here::here()
 
-# show_col(viridis_pal(option = "cividis")(10))
+# show_col(viridis_pal(option = "cividis")(5))
 ```
 
 ```{r datasets}
@@ -169,8 +169,8 @@ pcode1_shape <- st_read(here("./mmr_polbnda2_adm1_mimu_250k/mmr_polbnda2_adm1_mi
 # reading in 5Ws 2021
 fsc_2021 <- read_csv(here("./data/fsc5w_2021.csv"))
 
-# 2022 Q1 5Ws
-fsc <- read_csv(here("./data/fsc_q1_2022.csv"))
+# 2022 Q2 5Ws
+fsc <- read_csv(here("./data/fsc.csv"))
 
 # reading in vulnerability dataset
 vulmmr <- read_csv(here("./data/vulmmr.csv"))
@@ -792,13 +792,14 @@ acled %>%
 
 <br><br>
 
-### 1.7 5W results from the first quarter of 2022
+### 1.7 5W results from the first half of 2022
 
-In the first quarter of 2022, Food Security Cluster partners have reached a total of `r sum(fsc$new_beneficiaries) %>% format(big.mark = ",")` persons or `r round(sum(fsc$new_beneficiaries) / sum(fs_pin$fs_targeted) * 100, digits = 2)`% of the 2022 target. Below is an examination of the extent to which partners have targeted the townships most affected by conflict. 
 
-In this first plot, the number of beneficiaries reached in the first quarter of 2022 are plotted against the targeted population. Each point is a township and the red line down the middle represents reaching 100% of the target. How far above or below a township is indicates how far above or below the target it is. Additionally, the township prioritisation group each township belongs to is marked by the colour. 
+As of the second quarter of 2022, Food Security Cluster partners have reached a total of `r filter(fsc, humanitarian_or_development == "Humanitarian") %>% {sum(.$new_beneficiaries)} %>% format(big.mark = ",")` persons or `r round(sum(fsc$new_beneficiaries) / sum(fs_pin$fs_targeted) * 100, digits = 0)`% of the 2022 target. Below is an examination of the extent to which partners have targeted the townships most affected by conflict. 
 
-The townships on the far left of the plot have beneficiaries despite not having targets for 2022 (their targets have been nominally coded as $1$ so they appear on the plot). 
+In the plot  below, the number of beneficiaries reached, as of the second quarter of 2022, is plotted against the targeted population. Each point is a township and the red line down the middle represents reaching 100% of the target. How far above or below a township is indicates how far above or below the target it is. Additionally, the township prioritisation group each township belongs to is marked by the colour. 
+
+The townships on the far left of the plot have beneficiaries despite not having targets for 2022 (their targets have been nominally coded as *1* so they appear on the plot). 
 
 <br>
 
@@ -834,13 +835,13 @@ ben_target <- fsc %>%
   scale_colour_viridis_d(option = "cividis") +
   # scale_colour_manual(values = c("#575C6DFF", "#00204DFF", "#C4B56CFF", "#FFEA46FF")) +
   labs(y = "Beneficiaries", x = "Targeted population", colour = "Group", 
-       title = "Targeted population per township vs beneficiaries reached in Q1 2022, by prioritisation group",
+       title = "Targeted population per township vs beneficiaries reached as of 2022, by prioritisation group",
        subtitle = "The red line is 100% of target")
 
 ggplotly(ben_target, tooltip = c("text"), width = 820) %>% 
   config(displayModeBar = FALSE) %>% 
   layout(title = list(text = 
-                        paste0("Targeted population per township vs beneficiaries reached in Q1 2022",
+                        paste0("Targeted population per township vs beneficiaries reached as of Q2 2022",
                                     "<br>",
                                     "<sup>",
                                     "By prioritisation group; the red line is 100% of target; size is beneficiaries reached","</sup>")))
@@ -848,7 +849,7 @@ ggplotly(ben_target, tooltip = c("text"), width = 820) %>%
 
 <br>
 
-With reference to the table below, 2.8% of beneficiaries came from group A1 and 10.7% of beneficiaries came from group A2. On the surface, this seems like partners have made effort to reach conflict-affected townships. However, this reach has largely been due to oversubscription in Sittwe, where the number of beneficiaries reached in 152% of the target. 
+With reference to the table below, 7.2% of beneficiaries came from group A1 and 12% of beneficiaries came from group A2. On the surface, this seems like partners have made effort to reach conflict-affected townships. However, this reach has largely been due to oversubscription in Sittwe, where the number of beneficiaries reached in 191% of the target. 
 
 The development of the prioritisation groups also brings up the broader point of whether or not cluster targets are in line with needs and if they should be reformulated based on the information now available, as the targets in groups B and C are noticeably higher than those in group A. Nevertheless, it is hoped that partners will be able to afford townships in groups A1 and A2 greater coverage as the year progresses. 
 
@@ -887,7 +888,7 @@ fsc %>%
 <br>
 
 
-Overall, these are not encouraging results. Notably, only `r filter(fsc, state == "Sagaing") %>% {sum(.$new_beneficiaries)} %>% format(big.mark = ",")` beneficiaries being reached in the whole of Sagaing, where the fighting has been heaviest. It is recommended that targets and plans for the Food Security Cluster be reviewed, and partners be reminded to reallocate resources away from oversubscribed areas and away from group C, which are neither humanitarian nor development priorities.
+Notably, only `r filter(fsc, state == "Sagaing") %>% {sum(.$new_beneficiaries)} %>% format(big.mark = ",")` beneficiaries being reached in the whole of Sagaing, where the fighting has been heaviest. It is recommended that targets and plans for the Food Security Cluster be reviewed, and partners be reminded to reallocate resources away from oversubscribed areas and away from groups B and C, which are neither humanitarian nor development priorities, with B consisting of urban centres.
 
 <br><br>
 
