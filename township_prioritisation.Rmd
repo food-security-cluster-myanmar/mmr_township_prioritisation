@@ -190,7 +190,16 @@ fs_pin <- read_csv(here("./data/fs_pin.csv"))
 
 ```
 
+```{r write_mdp_dataset, eval=FALSE}
+fs_pin %>% 
+  mutate(multidimensional_vulnerability = mdp_adjust) %>% 
+  write_csv("./data/general_township.csv")
+```
+
 [Food Security Cluster Myanmar homepage](https://food-security-cluster-myanmar.github.io/)
+
+
+
 
 <br><br>
 
@@ -355,12 +364,9 @@ conflict_score %>%
          strategic_developments, violence_against_civilians) %>% 
   pivot_longer(cols = c(battles:violence_against_civilians), names_to = "event_type", values_to = "value") %>% 
   left_join(fs_pin %>% select(admin3_pcode, state), by = "admin3_pcode") %>% 
-  group_by(state) %>% 
-  mutate(total_events = sum(value)) %>% 
-  ungroup() %>% 
-  mutate(state = fct_reorder(state, -total_events)) %>% 
-  ungroup() %>% 
-  ggplot(aes(x = state, y = value, fill = event_type)) + 
+  replace_na(list(value = 0)) %>% 
+  ggplot(aes(x = fct_reorder(state, -value, .fun = sum), 
+             y = value, fill = event_type)) + 
   geom_col() +
   scale_y_continuous(labels = comma) +
   theme(axis.text.x = element_text(angle = 30, vjust = 0.7, hjust = 0.7), 
@@ -387,7 +393,7 @@ conflict_score %>%
   select(admin3_pcode, fatalities) %>% 
   left_join(fs_pin %>% select(admin3_pcode, state, population_2021_proj), by = "admin3_pcode") %>% 
   group_by(state) %>% 
-  summarise(fatalities = sum(fatalities), 
+  summarise(fatalities = sum(fatalities, na.rm = TRUE), 
             pop = sum(population_2021_proj)) %>% 
   mutate(fatalities_pc = fatalities / pop) %>% 
   mutate(state = fct_reorder(state, -fatalities)) %>% 
@@ -524,7 +530,7 @@ mdp_scatter <- fs_pin %>%
   scale_colour_viridis(direction = -1, end = .95) + 
   scale_x_continuous(trans = "log10") + 
   scale_y_continuous(trans = "log10") + 
-  labs(x = "Multidimensional vulnerability (2019)", y = "Conflict score (2021)", colour = "conflict\nscore", 
+  labs(x = "Multidimensional vulnerability (2019)", y = "Conflict score (2022)", colour = "conflict\nscore", 
        title = "Multidimensional vulnerability and conflict by township", 
        subtitle = "Averages marked by red lines; population marked by size")
 
@@ -613,7 +619,7 @@ fs_pin %>%
   ggplot(aes(x = mdp_adjust, y = conflict_score)) + 
   geom_point(aes(colour = cluster, size = population_2021_proj), alpha = .8) + 
   guides(colour = "none", size = "none") +
-  labs(x = "Multidimensional vulnerability (2019)", y = "Conflict score (2021)") + 
+  labs(x = "Multidimensional vulnerability (2019)", y = "Conflict score (2022)") + 
   scale_size_continuous(range = c(.5, 3)) + 
   scale_colour_viridis_d(option = "cividis") + 
   scale_x_continuous(trans = "log10") + 
@@ -704,7 +710,7 @@ group_scatter <- fs_pin %>%
   scale_colour_viridis_d(option = "cividis") + 
   scale_x_continuous(trans = "log10") + 
   scale_y_continuous(trans = "log10") + 
-  labs(x = "Multidimensional vulnerability (2019)", y = "Conflict score (2021)", 
+  labs(x = "Multidimensional vulnerability (2019)", y = "Conflict score (2022)", 
        colour = "group", size = "", 
        title = "Multidimensional vulnerability and conflict by township", 
        subtitle = "Averages marked by red lines; population marked by size")
@@ -738,7 +744,7 @@ In the ACLED dataset, of the `r filter(acled, year == 2021 & sub_event_type != "
 
 ```{r table-villages}
 acled %>% 
-  filter(year == 2021 & sub_event_type != "Peaceful protest") %>%
+  filter(year >= 2021 & sub_event_type != "Peaceful protest") %>%
   mutate(has_village = fct_relevel(has_village, c("yes", "no"))) %>% 
   group_by(has_village) %>% 
   summarise(events = n(), 
@@ -764,7 +770,7 @@ Below is an interactive reference table of the 1,917 villages identified in the 
 ```{r dt-conflict-villages}
 acled %>%
   mutate(has_village = fct_relevel(has_village, c("yes", "no"))) %>%
-  filter(year == 2021 & sub_event_type != "Peaceful protest" & has_village == "yes") %>%
+  filter(year >= 2021 & sub_event_type != "Peaceful protest" & has_village == "yes") %>%
   group_by(state = admin1, township = admin3, village = location) %>% 
   mutate(event_count = 1) %>% 
   summarise(events = n(), 
