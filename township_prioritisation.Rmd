@@ -732,8 +732,6 @@ ggplotly(group_scatter, tooltip = c("text"), width = 820, height = 550) %>%
 
 Townships are quite large -- on average, each has a population of `r summarise(fs_pin, mean = round(mean(population_2021_proj), digits = 0)) %>%  pull() %>% format(big.mark = ",")` persons. 
 
-In the ACLED dataset, 
-
 As mentioned earlier, rural households were found to be less resilient and more asset-poor in IFPRI's household welfare survey. These findings align well with the process the Food Security Cluster has developed here to identify priority households (where rural households are significantly more likely to fall into the priority group). It would be extremely fruitful to explore whether this alignment extends to conflict and some of the other environmental and socioeconomic variables that have been employed in this document. 
 
 It should also be noted that townships themselves are quite large -- on average, each has a population of `r summarise(fs_pin, mean = round(mean(population_2021_proj), digits = 0)) %>%  pull() %>% format(big.mark = ",")` persons. In areas where partners are not yet present, this might necessitate an intermediate step to help partners identify specific areas where they could begin working. 
