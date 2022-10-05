@@ -73,16 +73,16 @@ From the report Understanding Conflict Dynamics in Myanmar (a Food Security Pers
 
 ```{r}
 # ACLED dataset
-acled <- read_csv("./data/acled_20220606.csv") %>% 
+acled <- read_csv("./data/acled_20220920.csv") %>% 
   mutate(has_village = if_else(location != admin3, "yes", "no"))
 ```
 
 ## Conflict score 
 
-From the report Undestanding Conflict in Myanmar: a food Security Perspective. Updated with 2022 data. Link.
+From the report Understanding Conflict in Myanmar: a food Security Perspective. Updated with 2022 data. Link.
 
 ```{r}
-conflict_score <- read_csv("./data/conflict_score2.csv")
+conflict_score <- read_csv("./data/conflict_score_20220920.csv")
 ```
 
 ## Floods 
@@ -148,10 +148,7 @@ This is the main township-level reference dataset for this report. It is a wide 
 
 ```{r}
 # main township-level dataset
-fs_pin <- read_excel("./data/hpc_pin.xlsx") %>%  
-  left_join(fsc %>% group_by(admin3_pcode_old) %>% 
-              summarise(beneficiaries = sum(new_beneficiaries)),
-            by = c("admin3_pcode" = "admin3_pcode_old")) %>% 
+fs_pin <- read_excel("./data/hpc_pin.xlsx") %>%   
   left_join(conflict_score %>% 
               select(admin3_pcode, battles, explosions_remote_violence, 
                      protests_and_riots, strategic_developments,
@@ -169,25 +166,8 @@ fs_pin <- read_excel("./data/hpc_pin.xlsx") %>%
   left_join(floods_storm_surge %>% 
               select(admin3_pcode, flood_prob, flood_count),
             by = "admin3_pcode") %>% 
-  left_join(fsc_2021 %>%
-              filter(unique_beneficiaries == "Yes") %>%
-              group_by(admin3_pcode) %>%
-              summarise(beneficiaries_2021 = sum(beneficiaries),
-                        partners_2021 = n_distinct(org_code)),
-            by = "admin3_pcode") %>% 
   mutate(fs_pin = ifelse(fs_pin > population_2021_proj, population_2021_proj, fs_pin)) %>% 
-  replace_na(list(conflict_score = 0, beneficiaries = 0, beneficiaries_2021 = 0, partners_2021 = 0, flood_prob = 0)) %>% 
-  mutate(conflict_ranking = dense_rank(desc(conflict_score)),
-         flood_ranking = dense_rank(desc(flood_prob)),
-         fs_pin_ranking = dense_rank(desc(fs_pin)),
-         fs_target_ranking = dense_rank(desc(fs_targeted)),
-         fs_pin_pc = fs_pin / sum(fs_pin),
-         pin_pop = fs_pin / population_2021_proj) %>% 
-  mutate(old_group = case_when(
-    conflict_score >= mean(conflict_score) & population_density >= 1000 ~ "A1",
-    conflict_score >= mean(conflict_score) & population_density < 1000 ~ "A2",
-    conflict_score < mean(conflict_score) & population_density >= 1000 ~ "B1",
-    conflict_score < mean(conflict_score) & population_density < 1000 ~ "B2")) %>% 
+  replace_na(list(conflict_score = 0, flood_prob = 0)) %>% 
   mutate(band_text = case_when(
     vulnerability_band == 1 ~ "1. Extreme outliers, underdevelopment and conflict",
     vulnerability_band == 2 ~ "2. Conflict-affected, poor human development",
@@ -317,6 +297,8 @@ fs_pin %>%
 
 ```
 
+
+### Reference datasets 
 
 ```{r}
 fs_pin %>% glimpse()

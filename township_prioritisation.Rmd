@@ -430,15 +430,14 @@ To better discriminate amongst the numerous townships, a conflict score has been
 conflict_scatter <- conflict_score %>% 
   mutate(total_events = battles + explosions_remote_violence + protests_and_riots + strategic_developments +
            violence_against_civilians) %>% 
-  left_join(fs_pin %>% select(state, township, partners_2021, admin3_pcode, population_density), by = "admin3_pcode") %>% 
+  left_join(fs_pin %>% select(state, township, admin3_pcode, population_density), by = "admin3_pcode") %>% 
   mutate(conflict_score = round(conflict_score, digits = 3)) %>% 
   ggplot(aes(y = fatalities, x = total_events, colour = conflict_score, 
              text = paste0(township, ",", "\n",
                            state, ",", "\n",
                            "conflict_score: ", conflict_score, ",", "\n", 
                            "events: ", total_events, ",", "\n",
-                           "fatalities: ", fatalities, ",", "\n",
-                           "partners_2021: ", partners_2021))) +
+                           "fatalities: ", fatalities))) +
   geom_point(aes(size = fatalities), alpha = 0.85) +
   scale_y_continuous(trans = "log10", breaks = c(0, 1, 10, 30, 100, 300, 1000)) +
   scale_x_continuous(trans = "log10", breaks = c(0, 1, 10, 30, 100, 300)) +
@@ -473,7 +472,7 @@ At its most basic, the conflict score is just the average of battles, explosions
 
 ### 1.3 Comparison with multidimensional vulnerability
 
-Conflict, in spite of its out-sized role in the crisis in Myanmar, cannot serve as the only determinant of geographic prioritisation. In order to consider other factors, this document will make use of the MIMU-HARP Vulnerability Index, which is comprised of 8 indicators, selected for their ability to predict the rest of the variables in the 2015 Census dataset. Several of these variables were also collected at district-level and were used to create an updated 2019 Vulnerability index. 
+Conflict, in spite of its out-sized role in the crisis in Myanmar, cannot serve as the only determinant of geographic prioritisation. In order to consider other factors, this document will make use of the MIMU-HARP Vulnerability Index, which is comprised of 8 indicators, selected for their ability to predict the rest of the variables in the 2014 Census dataset. Several of these variables were also collected at district-level and were used to create an updated 2019 Vulnerability index. 
 
 The specific indicators chosen were: 
 
@@ -489,9 +488,9 @@ The specific indicators chosen were:
 
 These indicators were combined to construct a township-level vulnerability index. Of the indicators above, only the percentage of the population without a middle-school education and percentage of the population without formal identification documents were not collected in the 2019 Inter-Censal survey. 
 
-For the remaining indicators, they were bootstrapped using their 2015 township values and the 2019 district-level data. Going forward, the first seven components of the index will be extracted and treated separately as a shorthand for pre-existing multidimensional vulnerability in Myanmar. 
+For the remaining indicators, they were bootstrapped using their 2014 township values and the 2019 district-level data. Going forward, the first seven components of the index will be extracted and treated separately as a shorthand for pre-existing multidimensional vulnerability in Myanmar. 
 
-However, the eighth component of the vulnerability index, the conflict index, first constructed in 2015 from ACLED data, can and has been updated with more recent data -- this was done in the previous section. The specific indicators used in the construction of the conflict score were:
+However, the eighth component of the vulnerability index, the conflict index, first constructed in 2014 from ACLED data, can and has been updated with more recent data -- this was done in the previous section. The specific indicators used in the construction of the conflict score were:
 
 * Number of IDPs
 * Number of conflict fatalities
@@ -524,8 +523,7 @@ mdp_scatter <- fs_pin %>%
                            "events: ", total_events, ",", "\n",
                            "fatalities: ", fatalities, ",", "\n",
                            "conflict_score: ", round(conflict_score, digits = 3), ",", "\n", 
-                           "md_vulnerability: ", round(mdp_adjust, digits = 3), ",", "\n", 
-                           "partners_2021: ", partners_2021)),
+                           "md_vulnerability: ", round(mdp_adjust, digits = 3))),
              alpha = .7) +
   scale_colour_viridis(direction = -1, end = .95) + 
   scale_x_continuous(trans = "log10") + 
@@ -551,11 +549,11 @@ It has been [observed](https://www.irrawaddy.com/news/burma/kachin-independence-
 
 <br><br>
 
-### 1.4 2015 vulnerability bands
+### 1.4 2014 vulnerability bands
 
 This shift in conflict patterns can be further examined by considering the vulnerability bands developed by MIMU-HARP alongside its vulnerability index. In addition to an overall vulnerability score per township, 8 main typologies of vulnerability were also constructed to illustrate the wide variation of contexts and needs in the different parts of the country as well as to group together similar townships so that they may be considered as separate programming blocs. Please refer to the [MIMU-HARP Vulnerability Study](http://themimu.info/sites/themimu.info/files/documents/Report_Vulnerability_in_Myanmar_HARP-MIMU_Jun2018_ENG_Print_version.pdf) for more details. 
 
-According to MIMU-HARP, the result of this grouping is a "lens allowing the most vulnerable to be considered more methodically in policy and programme planning". By using these 8 typologies as a reference, it is possible to understand how the pattern of conflict has changed between 2015 and 2021. 
+According to MIMU-HARP, the result of this grouping is a "lens allowing the most vulnerable to be considered more methodically in policy and programme planning". By using these 8 typologies as a reference, it is possible to understand how the pattern of conflict has changed between 2014 and 2021. 
 
 <br>
 
@@ -702,8 +700,7 @@ group_scatter <- fs_pin %>%
                            "fatalities: ", fatalities, "\n",
                            "conflict_score: ", round(conflict_score, digits = 3), "\n", 
                            "vul_score: ", round(mdp_adjust, digits = 3), "\n", 
-                           "population: ", round(population_2021_proj, digits = 0), "\n", 
-                           "partners_2021: ", partners_2021))) + 
+                           "population: ", round(population_2021_proj, digits = 0)))) + 
   geom_hline(aes(yintercept = median(conflict_score)), colour = "red", lty = 2) + 
   geom_vline(aes(xintercept = median(mdp_adjust)), colour = "red", lty = 2) +
   geom_point(aes(size = population_2021_proj), alpha = .7) +
@@ -812,8 +809,7 @@ ben_target <- fsc %>%
   group_by(admin3_pcode_old) %>% 
   summarise(beneficiaries = sum(new_beneficiaries),
             partners = n_distinct(org_code)) %>% 
-  right_join(fs_pin %>% 
-               rename(beneficiaries_2022 = beneficiaries), 
+  right_join(fs_pin, 
              by = c("admin3_pcode_old" = "admin3_pcode")) %>% 
   replace_na(list(beneficiaries = 0)) %>% 
   mutate(reached_pc = beneficiaries / fs_targeted,
@@ -864,7 +860,8 @@ fsc %>%
   group_by(admin3_pcode_old) %>% 
   summarise(beneficiaries = sum(new_beneficiaries),
             partners = n_distinct(org_code)) %>% 
-  right_join(fs_pin %>%  select(-beneficiaries), by = c("admin3_pcode_old" = "admin3_pcode")) %>% 
+  right_join(fs_pin, 
+             by = c("admin3_pcode_old" = "admin3_pcode")) %>% 
   replace_na(list(beneficiaries = 0)) %>%
   mutate(gap = ifelse(fs_targeted - beneficiaries <= 0, 0, fs_targeted - beneficiaries),
          reached_pc = 1 - gap / fs_targeted, 
@@ -1168,7 +1165,6 @@ km_res2 <- fs_pin %>%
          conflict_score, 
          vulnerability_score, 
          fatalities) %>%
-  mutate_all()
   mutate_at(vars(population_density, 
                  conflict_score, 
                  vulnerability_score, 
