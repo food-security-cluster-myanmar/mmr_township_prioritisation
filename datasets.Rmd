@@ -300,26 +300,35 @@ fs_pin %>%
 
 ### Reference datasets 
 
+These do not work 
+
 ```{r}
-fs_pin %>% glimpse()
 
 fs_pin %>%
   mutate(conflict_events = battles + explosions_remote_violence +  protests_and_riots + strategic_developments + violence_against_civilians) %>% 
   select(state, admin1_pcode, township, admin3_pcode, total_population_2021proj = population_2021_proj, 
          food_security_pin_2022 = fs_pin, food_security_target_2022 = fs_targeted, 
          conflict_events, battles, explosions_remote_violence, protests_and_riots, strategic_developments, violence_against_civilians,
-         fatalities, conflict_score, flood_count, flood_prob, conflict_ranking, flood_ranking, vul_score_2019 = mdp_adjust, 
+         fatalities, conflict_score, flood_count, flood_prob, vul_score_2019 = mdp_adjust, 
          unsafe_water_2019 = water_2019, poor_housing_2019 = house_2019, no_middle_school_2019 = edu_2019,
          no_electricity_2019 =  electricity_2019, no_id_card_2019 = id_card_2019, female_illiteracy_2019 = female_literacy_2019, 
          child_dependency_2019) %>% 
   write_csv("township_indicators.csv")
 
 fs_pin %>% 
+  left_join(fsc %>%
+              group_by(admin3_pcode_old) %>%
+              summarise(beneficiaries = sum(new_beneficiaries),
+                        partners = n_distinct(org_code)), 
+            by = c("admin3_pcode" = "admin3_pcode_old")) %>%
   select(state, admin1_pcode, township, admin3_pcode,
          total_population_2021proj = population_2021_proj, 
          food_security_pin_2022 = fs_pin, food_security_target_2022 = fs_targeted, 
-         beneficiaries_2022 = beneficiaries) %>% 
+         beneficiaries_2022 = beneficiaries, 
+         partners_2022 = partners) %>% 
   write_csv("township_indicators_small.csv")
+
+
 ```
 
 ### Alternative clustering with flood risk 
@@ -335,11 +344,11 @@ km_res3 <- fs_pin %>%
   kmeans(6, nstart = 25)
 
 # reading it back into fs_pin
-fs_pin <- fs_pin %>% 
+fs_pin_alt <- fs_pin %>% 
   cbind(cluster3 = km_res3$cluster) 
 
-fs_pin %>%
-  write_csv("./data/fs_pin.csv")
+fs_pin_alt %>%
+  write_csv("./data/fs_pin_alt.csv")
 
 ```
 

@@ -1,0 +1,27 @@
+{
+    "id": "D9B00B14",
+    "path": "~/R/mmr_township_prioritisation/datasets.Rmd",
+    "project_path": "datasets.Rmd",
+    "type": "r_markdown",
+    "hash": "1119691019",
+    "contents": "",
+    "dirty": false,
+    "created": 1663658209147.0,
+    "source_on_save": false,
+    "relative_order": 2,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "346,10",
+        "scrollLine": "329",
+        "last_setup_crc32": "BFF1505934b57eb3"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1683740889,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1683740889402,
+    "read_only": false,
+    "read_only_alternatives": []
+}

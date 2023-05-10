@@ -1,0 +1,5 @@
+"0","# reading in 5Ws 2021"
+"0","fsc_2021 <- read_csv(""./data/fsc5w_2021.csv"")"
+"0",""
+"0","# 2022 Q1 5Ws"
+"0","fsc <- read_csv(""./data/fsc_q1_2022.csv"")"
